@@ -1,0 +1,32 @@
+name: 🐛 Bug Report
+description: Reportar un problema en un servicio o app
+labels: [bug, triage]
+body:
+  - type: input
+    id: repo
+    attributes:
+      label: Repo / servicio afectado
+      placeholder: "ec-be, aws-lambdas, ec-portal, ..."
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: ¿Qué está pasando?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Pasos para reproducir
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamiento esperado
+  - type: dropdown
+    id: env
+    attributes:
+      label: Ambiente
+      options: [prod, uat, dev, local]
+    validations:
+      required: true
