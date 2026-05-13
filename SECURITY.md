@@ -2,7 +2,7 @@
 
 ## Reportar una vulnerabilidad
 
-**No abras un issue público.** Mandá un email a **security@elliecare.app** con:
+**No abras un issue público.** Mandá un email a **patricio.alba@ellie.care** con:
 
 - Descripción del problema
 - Pasos para reproducir
