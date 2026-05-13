@@ -1,0 +1,26 @@
+name: ✨ Feature Request
+description: Proponer una nueva funcionalidad
+labels: [feature, triage]
+body:
+  - type: input
+    id: repo
+    attributes:
+      label: Repo / servicio donde aplica
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema o necesidad
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Propuesta
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
