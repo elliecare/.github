@@ -4,7 +4,7 @@
 
 **Plataforma de telemedicina, IoT clínico y cuidado activo.**
 
-AI · Wearables · Contact Center · Clinical Decision Support
+AI · IoT · Contact Center · Clinical Decision Support
 
 </div>
 
@@ -17,33 +17,34 @@ AI · Wearables · Contact Center · Clinical Decision Support
 │           🟠 GCP            │  │             ☁️  AWS              │
 ├─────────────────────────────┤  ├──────────────────────────────────┤
 │ ellie-ai-platform           │  │ ec-be (NestJS + ECS Fargate)     │
-│   ADK + Gemini 2.5          │  │ aws-lambdas (Connect + Cases)    │
+│   ADK + Gemini 2.5          │  │ aws-lambdas (Contact Center)     │
 │   MCP Servers + A2A         │  │ lambdas-sensors                  │
 │   Healthcare API (FHIR R4)  │  │ lambdas-ec-reporting             │
 │   BigQuery + Pub/Sub        │  │ lambdas-ec-be                    │
 │                             │  │ lambdas-user-portal              │
 │ ec-firebase-functions       │  │ lambdas-backup-database          │
-│   Device orchestration      │  │ automation-lambdas               │
-│   Firebase Auth + FCM       │  │ db-lambdas                       │
+│   Watch middleware          │  │ automation-lambdas               │
+│   (GCP Firebase Functions)  │  │ db-lambdas                       │
 └─────────────────────────────┘  │ updateSensibility                │
                                   └──────────────────────────────────┘
 
 ┌─────────────────────────────┐  ┌──────────────────────────────────┐
-│        🖥️  Frontends        │  │       📱 Mobile & Wearable       │
+│        🖥️  Frontends        │  │       📡 IoT Ecosystem           │
 ├─────────────────────────────┤  ├──────────────────────────────────┤
-│ ec-portal   (paciente PWA)  │  │ sw-android (Samsung Galaxy Watch)│
-│ ec-bo       (back office)   │  └──────────────────────────────────┘
-│ ec-landing  (marketing)     │
-│ ec-checkout (pagos)         │  ┌──────────────────────────────────┐
-└─────────────────────────────┘  │   📚 Shared, Infra & Tooling     │
-                                  ├──────────────────────────────────┤
-                                  │ typeorm-library                  │
-                                  │ device-manager                   │
-                                  │ ec-infra-2.0   (Terraform)       │
-                                  │ ec-metrics-catalog               │
-                                  │ deploys-jenkins                  │
-                                  │ firmas-institucionales           │
+│ ec-portal   (paciente PWA)  │  │ sw-android                       │
+│ ec-bo       (back office)   │  │   Samsung Galaxy Watch (WearOS)  │
+│ ec-landing  (marketing)     │  │ device-manager                   │
+│ ec-checkout (pagos)         │  │   Front de admin de relojes      │
+└─────────────────────────────┘  │ ec-firebase-functions            │
+                                  │   Watch middleware (GCP Firebase)│
                                   └──────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│                       📚 Shared, Infra & Tooling                     │
+├──────────────────────────────────────────────────────────────────────┤
+│ typeorm-library · ec-infra-2.0 · ec-metrics-catalog                 │
+│ deploys-jenkins · firmas-institucionales                            │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 > **Nota:** el prefijo `ec-` significa **Ellie Care**. Ejemplo: `ec-be` = Ellie Care Back-End.
@@ -52,33 +53,35 @@ AI · Wearables · Contact Center · Clinical Decision Support
 
 ## 📦 Productos activos
 
-### AI Platform (GCP)
+### 🤖 AI Platform (GCP)
 | Repo | Descripción |
 |---|---|
 | [ellie-ai-platform](https://github.com/elliecare/ellie-ai-platform) | Plataforma AI con ADK + Gemini 2.5, MCP Servers, FHIR, BigQuery |
 
-### Core Backend (AWS)
+### ⚙️ Core Backend (AWS)
 | Repo | Descripción |
 |---|---|
 | [ec-be](https://github.com/elliecare/ec-be) | Ellie Care Back-End — NestJS + TypeORM + ECS Fargate |
 | [typeorm-library](https://github.com/elliecare/typeorm-library) | Entidades TypeORM compartidas |
-| [ec-firebase-functions](https://github.com/elliecare/ec-firebase-functions) | Orquestación de dispositivos |
 
-### AWS Lambdas (Serverless Framework)
+### 📞 Contact Center (AWS)
 | Repo | Descripción |
 |---|---|
-| [aws-lambdas](https://github.com/elliecare/aws-lambdas) | AWS Connect + Cases integration |
+| [aws-lambdas](https://github.com/elliecare/aws-lambdas) | Contact Center sobre AWS Connect + Connect Cases (Serverless Framework v3) |
+
+### λ AWS Lambdas — Servicios y Ops
+| Repo | Descripción |
+|---|---|
 | [lambdas-sensors](https://github.com/elliecare/lambdas-sensors) | Queries de sensores (battery, HR, location, off-body, steps) |
 | [lambdas-ec-reporting](https://github.com/elliecare/lambdas-ec-reporting) | Generación de reportes |
 | [lambdas-ec-be](https://github.com/elliecare/lambdas-ec-be) | Integraciones con ec-be |
 | [lambdas-user-portal](https://github.com/elliecare/lambdas-user-portal) | Backend de ec-portal |
 | [lambdas-backup-database](https://github.com/elliecare/lambdas-backup-database) | Backups automáticos |
-| [automation-lambdas](https://github.com/elliecare/automation-lambdas) | Automatización |
+| [automation-lambdas](https://github.com/elliecare/automation-lambdas) | Automatización ops |
 | [db-lambdas](https://github.com/elliecare/db-lambdas) | Operaciones de DB |
 | [updateSensibility](https://github.com/elliecare/updateSensibility) | Lambda standalone |
-| [device-manager](https://github.com/elliecare/device-manager) | Gestión de dispositivos |
 
-### Frontends
+### 🖥️ Frontends
 | Repo | Stack | Descripción |
 |---|---|---|
 | [ec-portal](https://github.com/elliecare/ec-portal) | React 18 + Tailwind v4 + PWA | Ellie Care Portal del paciente |
@@ -86,12 +89,16 @@ AI · Wearables · Contact Center · Clinical Decision Support
 | [ec-landing](https://github.com/elliecare/ec-landing) | React 18 + Vite + Tailwind | Ellie Care Landing pública |
 | [ec-checkout](https://github.com/elliecare/ec-checkout) | TypeScript | Ellie Care Checkout (pagos) |
 
-### Wearable
+### 📡 IoT Ecosystem
+Código relacionado a dispositivos que emiten telemetría — wearables, middleware y herramientas de administración.
+
 | Repo | Plataforma | Descripción |
 |---|---|---|
 | [sw-android](https://github.com/elliecare/sw-android) | Samsung Galaxy Watch (WearOS) | App del smartwatch |
+| [device-manager](https://github.com/elliecare/device-manager) | TypeScript | Front de administración de relojes — ver logs, setear configuración |
+| [ec-firebase-functions](https://github.com/elliecare/ec-firebase-functions) | GCP Firebase Functions | Middleware del reloj — orquesta eventos y comandos |
 
-### Infra & Tooling
+### 🔧 Infra & Tooling
 | Repo | Descripción |
 |---|---|
 | [ec-infra-2.0](https://github.com/elliecare/ec-infra-2.0) | Terraform — infra activa |
