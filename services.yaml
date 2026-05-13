@@ -6,6 +6,38 @@
 version: 1
 updated: 2026-05-12
 
+domains:
+  ai-platform:
+    - ellie-ai-platform
+  core-backend:
+    - ec-be
+    - typeorm-library
+  contact-center:
+    - aws-lambdas
+  aws-services:
+    - lambdas-sensors
+    - lambdas-ec-reporting
+    - lambdas-ec-be
+    - lambdas-user-portal
+    - lambdas-backup-database
+    - automation-lambdas
+    - db-lambdas
+    - updateSensibility
+  frontends:
+    - ec-portal
+    - ec-bo
+    - ec-landing
+    - ec-checkout
+  iot-ecosystem:
+    - sw-android
+    - device-manager
+    - ec-firebase-functions
+  infra-tooling:
+    - ec-infra-2.0
+    - ec-metrics-catalog
+    - deploys-jenkins
+    - firmas-institucionales
+
 clouds:
   gcp:
     - ellie-ai-platform
@@ -21,16 +53,19 @@ clouds:
     - automation-lambdas
     - db-lambdas
     - updateSensibility
-    - device-manager
   static_hosting:
     - ec-portal
     - ec-bo
     - ec-landing
     - ec-checkout
+    - device-manager
+  device:
+    - sw-android
 
 services:
   - name: ellie-ai-platform
     repo: elliecare/ellie-ai-platform
+    domain: ai-platform
     cloud: gcp
     tier: ai-platform
     stack: [adk, gemini-2.5, mcp, python]
@@ -42,6 +77,7 @@ services:
 
   - name: ec-be
     repo: elliecare/ec-be
+    domain: core-backend
     cloud: aws
     tier: backend
     description: Ellie Care Back-End
@@ -55,6 +91,7 @@ services:
 
   - name: typeorm-library
     repo: elliecare/typeorm-library
+    domain: core-backend
     cloud: multi
     tier: library
     stack: [typeorm, typescript]
@@ -65,8 +102,10 @@ services:
 
   - name: aws-lambdas
     repo: elliecare/aws-lambdas
+    domain: contact-center
     cloud: aws
     tier: backend
+    description: Contact Center (AWS Connect + Connect Cases)
     stack: [serverless-v3, typescript, aws-sdk-v3]
     integrations: [aws-connect, aws-cases, s3, eventbridge]
     status: production
@@ -75,8 +114,10 @@ services:
 
   - name: lambdas-sensors
     repo: elliecare/lambdas-sensors
+    domain: aws-services
     cloud: aws
     tier: backend
+    description: Sensor data queries (battery, HR, location, off-body, steps)
     stack: [serverless-v3, typeorm, typescript]
     pattern: npm-workspaces
     depends_on: [typeorm-library]
@@ -87,9 +128,10 @@ services:
 
   - name: ec-firebase-functions
     repo: elliecare/ec-firebase-functions
+    domain: iot-ecosystem
     cloud: gcp
-    tier: backend
-    description: Ellie Care Firebase Functions
+    tier: middleware
+    description: Watch middleware — runs on GCP Firebase Cloud Functions
     stack: [firebase-functions, typescript]
     integrations: [firestore, fcm, twilio, whatsapp, knox-mdm]
     status: production
@@ -97,6 +139,7 @@ services:
 
   - name: ec-portal
     repo: elliecare/ec-portal
+    domain: frontends
     cloud: static-hosting
     tier: frontend
     description: Ellie Care Portal (paciente, PWA)
@@ -109,6 +152,7 @@ services:
 
   - name: ec-bo
     repo: elliecare/ec-bo
+    domain: frontends
     cloud: static-hosting
     tier: frontend
     description: Ellie Care Back Office
@@ -120,6 +164,7 @@ services:
 
   - name: ec-landing
     repo: elliecare/ec-landing
+    domain: frontends
     cloud: static-hosting
     tier: frontend
     description: Ellie Care Landing pública
@@ -129,6 +174,7 @@ services:
 
   - name: ec-checkout
     repo: elliecare/ec-checkout
+    domain: frontends
     cloud: static-hosting
     tier: frontend
     description: Ellie Care Checkout (pagos)
@@ -138,15 +184,28 @@ services:
 
   - name: sw-android
     repo: elliecare/sw-android
+    domain: iot-ecosystem
     cloud: device
     tier: wearable
+    description: App del smartwatch
     stack: [kotlin, wearos]
     target_device: samsung-galaxy-watch
     status: production
     ai_ready: pending
 
+  - name: device-manager
+    repo: elliecare/device-manager
+    domain: iot-ecosystem
+    cloud: static-hosting
+    tier: frontend
+    description: Front de administración de relojes — visualización de logs y configuración
+    stack: [typescript]
+    status: production
+    ai_ready: pending
+
   - name: lambdas-ec-reporting
     repo: elliecare/lambdas-ec-reporting
+    domain: aws-services
     cloud: aws
     tier: backend
     description: Lambdas para reporting de Ellie Care
@@ -157,6 +216,7 @@ services:
 
   - name: lambdas-ec-be
     repo: elliecare/lambdas-ec-be
+    domain: aws-services
     cloud: aws
     tier: backend
     description: Lambdas para integraciones con Ellie Care Back-End
@@ -166,8 +226,10 @@ services:
 
   - name: lambdas-user-portal
     repo: elliecare/lambdas-user-portal
+    domain: aws-services
     cloud: aws
     tier: backend
+    description: Backend para ec-portal
     stack: [serverless-v3, typescript]
     consumed_by: [ec-portal]
     status: production
@@ -175,6 +237,7 @@ services:
 
   - name: lambdas-backup-database
     repo: elliecare/lambdas-backup-database
+    domain: aws-services
     cloud: aws
     tier: ops
     stack: [serverless-v3, typescript]
@@ -183,6 +246,7 @@ services:
 
   - name: automation-lambdas
     repo: elliecare/automation-lambdas
+    domain: aws-services
     cloud: aws
     tier: ops
     stack: [python, serverless]
@@ -191,6 +255,7 @@ services:
 
   - name: db-lambdas
     repo: elliecare/db-lambdas
+    domain: aws-services
     cloud: aws
     tier: ops
     stack: [serverless-v3, typescript]
@@ -199,22 +264,16 @@ services:
 
   - name: updateSensibility
     repo: elliecare/updateSensibility
+    domain: aws-services
     cloud: aws
     tier: backend
     stack: [serverless-v3, typescript]
     status: production
     ai_ready: pending
 
-  - name: device-manager
-    repo: elliecare/device-manager
-    cloud: aws
-    tier: backend
-    stack: [typescript]
-    status: production
-    ai_ready: pending
-
   - name: ec-infra-2.0
     repo: elliecare/ec-infra-2.0
+    domain: infra-tooling
     cloud: aws
     tier: infra
     description: Ellie Care Infrastructure (Terraform)
@@ -224,6 +283,7 @@ services:
 
   - name: ec-metrics-catalog
     repo: elliecare/ec-metrics-catalog
+    domain: infra-tooling
     tier: observability
     description: Ellie Care Metrics Catalog
     status: production
@@ -231,6 +291,7 @@ services:
 
   - name: deploys-jenkins
     repo: elliecare/deploys-jenkins
+    domain: infra-tooling
     tier: ci-cd
     stack: [jenkins, groovy]
     status: production
@@ -238,6 +299,7 @@ services:
 
   - name: firmas-institucionales
     repo: elliecare/firmas-institucionales
+    domain: infra-tooling
     tier: tooling
     stack: [html]
     status: production
