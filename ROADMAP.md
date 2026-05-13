@@ -25,6 +25,8 @@ Plan técnico transversal de la org. Items priorizados por **riesgo si no se hac
 
 **Status:** 🔴 Abierto · **Prioridad:** CRÍTICA · **Owner:** Backend team
 
+📋 **Plan detallado:** [`plans/01-typeorm-library-semver.md`](plans/01-typeorm-library-semver.md)
+
 ### Contexto
 
 `typeorm-library` define las entidades TypeORM compartidas del stack AWS. Hoy los 4 consumers la consumen así:
