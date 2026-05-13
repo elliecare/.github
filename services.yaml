@@ -1,0 +1,263 @@
+# Ellie Care — Service Manifest
+# Machine-readable index of all production services.
+# AI agents and tooling should consume this to discover the platform.
+#
+# Note: `ec-` prefix means "Ellie Care". Example: ec-be = Ellie Care Back-End.
+version: 1
+updated: 2026-05-12
+
+clouds:
+  gcp:
+    - ellie-ai-platform
+    - ec-firebase-functions
+  aws:
+    - ec-be
+    - aws-lambdas
+    - lambdas-sensors
+    - lambdas-ec-reporting
+    - lambdas-ec-be
+    - lambdas-user-portal
+    - lambdas-backup-database
+    - automation-lambdas
+    - db-lambdas
+    - updateSensibility
+    - device-manager
+  static_hosting:
+    - ec-portal
+    - ec-bo
+    - ec-landing
+    - ec-checkout
+
+services:
+  - name: ellie-ai-platform
+    repo: elliecare/ellie-ai-platform
+    cloud: gcp
+    tier: ai-platform
+    stack: [adk, gemini-2.5, mcp, python]
+    integrations: [bigquery, firestore, healthcare-api-fhir, pubsub]
+    compliance: [hipaa, lgpd, ley-25326]
+    status: production
+    branches: [main, dev]
+    ai_ready: full
+
+  - name: ec-be
+    repo: elliecare/ec-be
+    cloud: aws
+    tier: backend
+    description: Ellie Care Back-End
+    stack: [nestjs, typeorm, typescript]
+    deploy: ecs-fargate
+    database: postgres-rds
+    status: production
+    depends_on: [typeorm-library]
+    branches: [main, develop, uat]
+    ai_ready: full
+
+  - name: typeorm-library
+    repo: elliecare/typeorm-library
+    cloud: multi
+    tier: library
+    stack: [typeorm, typescript]
+    distribution: github-branch  # ⚠️ pinned to #develop — migrar a SemVer
+    consumed_by: [ec-be, lambdas-sensors, aws-lambdas, lambdas-ec-reporting]
+    status: production
+    ai_ready: pending
+
+  - name: aws-lambdas
+    repo: elliecare/aws-lambdas
+    cloud: aws
+    tier: backend
+    stack: [serverless-v3, typescript, aws-sdk-v3]
+    integrations: [aws-connect, aws-cases, s3, eventbridge]
+    status: production
+    branches: [main]
+    ai_ready: full
+
+  - name: lambdas-sensors
+    repo: elliecare/lambdas-sensors
+    cloud: aws
+    tier: backend
+    stack: [serverless-v3, typeorm, typescript]
+    pattern: npm-workspaces
+    depends_on: [typeorm-library]
+    integrations: [postgres-rds, aws-secrets-manager]
+    status: production
+    branches: [main, dev, uat]
+    ai_ready: pending
+
+  - name: ec-firebase-functions
+    repo: elliecare/ec-firebase-functions
+    cloud: gcp
+    tier: backend
+    description: Ellie Care Firebase Functions
+    stack: [firebase-functions, typescript]
+    integrations: [firestore, fcm, twilio, whatsapp, knox-mdm]
+    status: production
+    ai_ready: pending
+
+  - name: ec-portal
+    repo: elliecare/ec-portal
+    cloud: static-hosting
+    tier: frontend
+    description: Ellie Care Portal (paciente, PWA)
+    stack: [react-18, vite, tailwind-v4, tanstack-query, i18next, pwa-workbox]
+    languages: [es, en, pt, ca]
+    auth: firebase-auth
+    status: production
+    branches: [main, dev, uat]
+    ai_ready: full
+
+  - name: ec-bo
+    repo: elliecare/ec-bo
+    cloud: static-hosting
+    tier: frontend
+    description: Ellie Care Back Office
+    stack: [react-18, mui-v5, redux-toolkit, tanstack-query]
+    auth: firebase-auth
+    status: production
+    branches: [main, dev]
+    ai_ready: full
+
+  - name: ec-landing
+    repo: elliecare/ec-landing
+    cloud: static-hosting
+    tier: frontend
+    description: Ellie Care Landing pública
+    stack: [react-18, vite-5, tailwind-v4]
+    status: production
+    ai_ready: pending
+
+  - name: ec-checkout
+    repo: elliecare/ec-checkout
+    cloud: static-hosting
+    tier: frontend
+    description: Ellie Care Checkout (pagos)
+    stack: [typescript]
+    status: production
+    ai_ready: pending
+
+  - name: sw-android
+    repo: elliecare/sw-android
+    cloud: device
+    tier: wearable
+    stack: [kotlin, wearos]
+    target_device: samsung-galaxy-watch
+    status: production
+    ai_ready: pending
+
+  - name: lambdas-ec-reporting
+    repo: elliecare/lambdas-ec-reporting
+    cloud: aws
+    tier: backend
+    description: Lambdas para reporting de Ellie Care
+    stack: [serverless-v3, typescript]
+    depends_on: [typeorm-library]
+    status: production
+    ai_ready: pending
+
+  - name: lambdas-ec-be
+    repo: elliecare/lambdas-ec-be
+    cloud: aws
+    tier: backend
+    description: Lambdas para integraciones con Ellie Care Back-End
+    stack: [serverless-v3, typescript]
+    status: production
+    ai_ready: pending
+
+  - name: lambdas-user-portal
+    repo: elliecare/lambdas-user-portal
+    cloud: aws
+    tier: backend
+    stack: [serverless-v3, typescript]
+    consumed_by: [ec-portal]
+    status: production
+    ai_ready: pending
+
+  - name: lambdas-backup-database
+    repo: elliecare/lambdas-backup-database
+    cloud: aws
+    tier: ops
+    stack: [serverless-v3, typescript]
+    status: production
+    ai_ready: pending
+
+  - name: automation-lambdas
+    repo: elliecare/automation-lambdas
+    cloud: aws
+    tier: ops
+    stack: [python, serverless]
+    status: production
+    ai_ready: pending
+
+  - name: db-lambdas
+    repo: elliecare/db-lambdas
+    cloud: aws
+    tier: ops
+    stack: [serverless-v3, typescript]
+    status: production
+    ai_ready: pending
+
+  - name: updateSensibility
+    repo: elliecare/updateSensibility
+    cloud: aws
+    tier: backend
+    stack: [serverless-v3, typescript]
+    status: production
+    ai_ready: pending
+
+  - name: device-manager
+    repo: elliecare/device-manager
+    cloud: aws
+    tier: backend
+    stack: [typescript]
+    status: production
+    ai_ready: pending
+
+  - name: ec-infra-2.0
+    repo: elliecare/ec-infra-2.0
+    cloud: aws
+    tier: infra
+    description: Ellie Care Infrastructure (Terraform)
+    stack: [terraform, hcl]
+    status: production
+    ai_ready: pending
+
+  - name: ec-metrics-catalog
+    repo: elliecare/ec-metrics-catalog
+    tier: observability
+    description: Ellie Care Metrics Catalog
+    status: production
+    ai_ready: pending
+
+  - name: deploys-jenkins
+    repo: elliecare/deploys-jenkins
+    tier: ci-cd
+    stack: [jenkins, groovy]
+    status: production
+    ai_ready: pending
+
+  - name: firmas-institucionales
+    repo: elliecare/firmas-institucionales
+    tier: tooling
+    stack: [html]
+    status: production
+    ai_ready: minimal
+
+legacy:
+  - { name: ec-be-hospital, reason: line-discontinued-hospital }
+  - { name: ec-fe-hospital, reason: line-discontinued-hospital }
+  - { name: ec-mobile, reason: line-discontinued-mobile }
+  - { name: ec-sw, reason: line-discontinued-watchos }
+  - { name: sw-watchos, reason: line-discontinued-apple-watch }
+  - { name: ec-web, reason: replaced-by-ec-landing }
+  - { name: ec-portal-old, reason: replaced-by-ec-portal }
+  - { name: ec-fe, reason: archived-replaced }
+  - { name: facewatch-digital, reason: wearable-experiment }
+  - { name: sw-fallcare, reason: wearable-experiment }
+  - { name: health-measurements, reason: wearable-experiment }
+  - { name: test-pipeline, reason: jenkins-test-historic }
+  - { name: test-webhook, reason: jenkins-test-historic }
+
+experimental:
+  - { name: FallCare-AI, reason: poc }
+  - { name: poc_fitga, reason: poc }
