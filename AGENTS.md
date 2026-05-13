@@ -13,8 +13,20 @@ Esta es la guía universal para cualquier agente de IA (Claude Code, Cursor, Cop
 ### Clouds y responsabilidades
 
 - **GCP**: AI, telemetría, FHIR clínico, agentes (Gemini 2.5 + ADK + MCP)
-- **AWS**: Backend transaccional, contact center, lambdas de integración
-- **Firebase (sub-GCP)**: Auth (Firebase Auth), orquestación de dispositivos (Functions)
+- **AWS**: Backend transaccional (ec-be), contact center (aws-lambdas), lambdas de integración y ops
+- **GCP Firebase**: Auth (Firebase Auth) y middleware del reloj (ec-firebase-functions)
+
+### Dominios
+
+| Dominio | Repos |
+|---|---|
+| `ai-platform` | ellie-ai-platform |
+| `core-backend` | ec-be, typeorm-library |
+| `contact-center` | aws-lambdas |
+| `aws-services` | lambdas-* (sensors, reporting, ec-be, user-portal, backup, automation, db, updateSensibility) |
+| `frontends` | ec-portal, ec-bo, ec-landing, ec-checkout |
+| `iot-ecosystem` | sw-android (Galaxy Watch), device-manager (admin UI), ec-firebase-functions (watch middleware) |
+| `infra-tooling` | ec-infra-2.0, ec-metrics-catalog, deploys-jenkins, firmas-institucionales |
 
 ### Naming
 
